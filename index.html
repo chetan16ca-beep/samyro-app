@@ -1,2 +1,86 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SAMYRO</title><style>*{box-sizing:border-box}body{margin:0;font-family:-apple-system,Arial;background:#fff8ef;color:#111827}.top{background:#111827;color:#fff;padding:28px 20px;border-radius:0 0 28px 28px}.brand{font-size:34px;font-weight:900}.tag{color:#fb923c;font-weight:800}.wrap{max-width:520px;margin:auto}.hero,.card{padding:20px}.hero h1{font-size:38px;line-height:1;margin:10px 0}.card{margin:14px 18px;background:#fff;border:1px solid #eadfce;border-radius:22px}label{display:block;font-weight:700;margin:12px 0 6px}input,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:14px;font-size:16px}button{width:100%;padding:15px;margin-top:14px;border:0;border-radius:14px;background:#f47b20;font-weight:900;font-size:16px}.price{font-size:34px;font-weight:900}.muted{color:#667085}.notice{margin-top:14px;padding:12px;background:#fff1e6;border-radius:14px}</style></head><body><div class="wrap"><div class="top"><div class="brand">SAMYRO</div><div class="tag">RIDE • SEND • DELIVER</div></div><div class="hero"><div class="muted">LOCAL DELIVERY</div><h1>Anything, anywhere in the city.</h1><p>Fast local pickup & delivery.</p></div><div class="card"><h2>Book a delivery</h2><label>Name</label><input id="n" placeholder="Your name"><label>Phone</label><input id="p" placeholder="Mobile number"><label>Pickup</label><input id="pu" placeholder="Pickup address"><button onclick="gps()">📍 Use current location</button><label>Drop</label><input id="dr" placeholder="Delivery address"><label>Distance (km)</label><input id="km" type="number" value="5"><label>Priority</label><select id="pr"><option>Normal</option><option>Urgent</option></select><p class="muted">ESTIMATED FARE</p><div class="price" id="fare">₹75</div><button onclick="book()">Book Now</button><div class="notice">Passenger ride service disabled until applicable permissions are confirmed.</div></div><div class="card" id="st"><h2>Track order</h2><p class="muted">Latest booking will appear here.</p></div></div><script>const k=document.getElementById("km"),r=document.getElementById("pr"),f=document.getElementById("fare");function calc(){let d=Math.max(1,+k.value||1);f.textContent="₹"+Math.round(45+Math.max(0,d-2)*10+(r.value==="Urgent"?25:0))}k.oninput=calc;r.onchange=calc;calc();function gps(){navigator.geolocation?navigator.geolocation.getCurrentPosition(x=>pu.value="Current location: "+x.coords.latitude.toFixed(6)+", "+x.coords.longitude.toFixed(6),()=>alert("Location permission allow karein.")):alert("GPS unavailable")}function book(){if(!pu.value||!dr.value)return alert("Pickup aur drop bhariye.");let c="SM"+Math.floor(100000+Math.random()*900000),o=Math.floor(1000+Math.random()*9000);st.innerHTML="<h2>Booking confirmed</h2><p><b>"+c+"</b></p><p>"+pu.value+" → "+dr.value+"</p><p><b>Fare: "+f.textContent+"</b></p><p>Delivery OTP: <b>"+o+"</b></p><p class=muted>Demo version</p>";st.scrollIntoView({behavior:"smooth"})}</script></body></html>
-  
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SAMYRO</title><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json">
+<style>
+:root{--n:#0f172a;--o:#f47b20;--bg:#fffaf2;--m:#667085;--l:#e8e2d7;--g:#16a34a}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--n)}
+.app{max-width:520px;margin:auto;min-height:100vh}.top{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:white;border-bottom:1px solid var(--l);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:46px;height:46px;border-radius:50%}.brand b{font-size:24px}.sub{color:var(--m);font-size:13px}
+.wrap{padding:22px 18px 100px}.hero{padding:24px;border-radius:24px;background:linear-gradient(135deg,#1b2548,#5c351d);color:white}.hero h1{font-size:38px;line-height:1;margin:10px 0}.ey{color:#ff9b54;letter-spacing:4px;font-weight:800;font-size:12px}
+.card,.order{background:white;border:1px solid var(--l);border-radius:22px;padding:18px;margin-top:16px}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;padding:14px;border:1px solid #ddd5c7;border-radius:16px;font:inherit}.btn{border:0;border-radius:16px;padding:14px 16px;font-weight:800}.orange{background:var(--o);color:var(--n)}.navy{background:var(--n);color:white}.ghost{background:#f1f3f6}.w{width:100%}.price{font-size:30px;font-weight:900}.pill{padding:7px 10px;border-radius:999px;background:#ffedd5;font-size:12px;font-weight:800}.green{background:#dcfce7;color:#166534}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:white;border-top:1px solid var(--l);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}.nav button{border:0;background:transparent;padding:10px;color:#667085}.nav .on{color:var(--o);font-weight:800}
+.staff{min-height:100vh;background:linear-gradient(145deg,#111827,#111827 60%,#78350f);color:white;padding:24px}.role{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:20px;margin-top:14px}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:12px}.k{background:white;border:1px solid var(--l);border-radius:20px;padding:16px}.k b{font-size:28px}
+.note{padding:12px;border:1px dashed #fdba74;border-radius:16px;color:#9a3412;background:#fff7ed;margin-top:16px}.otp{font-size:34px;letter-spacing:10px;font-weight:900}
+</style></head><body><div id="root"></div>
+<script>
+const API="https://samyro-backend.chetan16ca.workers.dev/api"; let role="customer", view="book", riderPin="", adminPin=""; let currentRider=1;
+const q=s=>document.querySelector(s); const money=n=>"₹"+Math.round(n||0); const j=async(u,o={})=>{let r=await fetch(API+u,o);let d=await r.json();if(!r.ok)throw new Error(d.error||"Request failed");return d};
+async function pricing(){return await j("/pricing")}
+function top(extra=""){return `<div class=top><div class=brand><img src="assets/logo.png"><div><b>SAMYRO</b><div class=sub>${extra}</div></div></div><button class="btn ghost" onclick="staff()">Staff</button></div>`}
+function nav(){return `<div class=nav><button class="${view==='book'?'on':''}" onclick="view='book';render()">Book</button><button class="${view==='track'?'on':''}" onclick="view='track';render()">Track</button><button class="${view==='orders'?'on':''}" onclick="view='orders';render()">Orders</button><button class="${view==='help'?'on':''}" onclick="view='help';render()">Help</button></div>`}
+
+async function useGPS(){
+  const field=document.getElementById("pu");
+  const btn=document.getElementById("gpsBtn");
+  if(!navigator.geolocation){ alert("GPS is not supported on this device."); return; }
+  btn.disabled=true; btn.textContent="Locating…";
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const lat=pos.coords.latitude.toFixed(6);
+      const lon=pos.coords.longitude.toFixed(6);
+      field.value=`Current location (${lat}, ${lon})`;
+      btn.disabled=false; btn.textContent="Use current location";
+      alert("Current GPS location added.");
+    },
+    err=>{
+      btn.disabled=false; btn.textContent="Use current location";
+      alert("Location permission denied/unavailable. On iPhone: Settings → Privacy & Security → Location Services → Safari Websites → While Using.");
+    },
+    {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
+  );
+}
+
+async function customer(){
+ if(view==="book"){let p=await pricing();return top("Customer")+`<div class=wrap><div class=hero><div class=ey>RIDE • SEND • DELIVER</div><h1>Anything, anywhere in the city.</h1><div>Real server booking • OTP delivery</div></div>
+ <div class=card><h2>Route</h2><label>Your name</label><input id=cn value="Ravi Patel"><label>Phone</label><input id=cp value="9825041122"><label>Pickup from</label>
+<div style="display:flex;gap:8px;align-items:center">
+  <input id=pu value="Piraman Road, Ankleshwar" style="flex:1">
+  <button id=gpsBtn class="btn navy" type="button" onclick="useGPS()">Use current location</button>
+</div>
+<div class="sub" style="margin-top:6px">Uses your phone GPS. Exact street-name conversion and route distance can be connected later.</div><label>Deliver to</label><input id=dr value="Zadeshwar, Bharuch"><label>Distance (km)</label><input id=km type=number step=.1 value=4.5></div>
+ <div class=card><h2>Parcel</h2><label>Type</label><select id=pt><option>Documents</option><option selected>Parcel / Package</option><option>Medicine</option><option>Fragile item</option></select><label>Receiver name</label><input id=rn value="Kunal Mehta"><label>Receiver phone</label><input id=rp value="9825000000"><label>Priority</label><select id=pr><option value=normal>Normal</option><option value=urgent>Urgent +${money(p.urgent_surcharge)}</option></select><label>Payment</label><select id=pay><option>UPI</option><option>CASH</option></select><button class="btn orange w" style="margin-top:14px" onclick="book()">Book now</button></div>
+ <div class=note>Passenger Pick & Drop stays OFF until applicable transport/RTO permissions are confirmed.</div></div>${nav()}`}
+ if(view==="orders"){let os=await j("/orders");return top("Customer")+`<div class=wrap><h1>Your orders</h1>${os.map(o=>ocard(o)).join("")||"<div class=card>No orders yet.</div>"}</div>${nav()}`}
+ if(view==="track"){let os=await j("/orders"),o=os.find(x=>!["delivered","cancelled"].includes(x.status))||os[0];return top("Customer")+`<div class=wrap><h1>Track</h1>${o?`<div class=card><div class=row><b style="font-size:24px">${o.code}</b><span class=pill>${o.status}</span></div><p>${o.pickup} → ${o.dropoff}</p><div style="height:160px;border:1px dashed var(--l);border-radius:18px;display:grid;place-items:center;color:var(--m)">Live map connects in next step</div><div class=card style="background:#f4f0e8"><div class=sub>DELIVERY OTP</div><div class=otp>${o.otp}</div></div></div>`:"<div class=card>No order.</div>"}</div>${nav()}`}
+ return top("Customer")+`<div class=wrap><h1>Help</h1><div class=card><label>Order code</label><input id=tc><label>Issue</label><textarea id=tm rows=5></textarea><button class="btn orange w" onclick="ticket()">Submit ticket</button></div></div>${nav()}`
+}
+function ocard(o){return `<div class=order><div class=row><b>${o.code}</b><span class="pill ${o.status==='delivered'?'green':''}">${o.status}</span></div><p>${o.pickup} → ${o.dropoff}</p><div class=row><b>${money(o.fare)}</b><span>${o.payment}</span></div></div>`}
+async function book(){try{let b={customer_name:cn.value,customer_phone:cp.value,pickup:pu.value,dropoff:dr.value,distance_km:+km.value,parcel_type:pt.value,receiver_name:rn.value,receiver_phone:rp.value,priority:pr.value,payment:pay.value};let r=await j("/orders",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)});alert("Booked "+r.code+" • Fare "+money(r.fare));view="track";render()}catch(e){alert(e.message)}}
+async function ticket(){await j("/tickets",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({order_code:tc.value,message:tm.value})});alert("Ticket submitted")}
+function staff(){role="staff";render()}
+async function staffScreen(){return `<div class=staff><div class=brand><img src="assets/logo.png"><div><b>SAMYRO</b><div class=sub style="color:#fdba74">RIDE • SEND • DELIVER</div></div></div><h1 style="font-size:50px;margin-top:70px">Staff access</h1>
+<div class=role onclick="riderLogin()"><h2>Rider Login</h2><p>Jobs, delivery status and earnings.</p></div><div class=role onclick="adminLogin()"><h2>Admin Login</h2><p>Bookings, riders, pricing and revenue.</p></div><div class=role onclick="role='customer';view='book';render()"><h2>← Customer App</h2></div></div>`}
+function riderLogin(){let p=prompt("Enter Rider PIN");if(p!=="1234")return alert("Incorrect PIN");riderPin=p;role="rider";view="jobs";render()}
+function adminLogin(){let p=prompt("Enter Admin PIN");if(p!=="5678")return alert("Incorrect PIN");adminPin=p;role="admin";render()}
+async function rider(){
+ let os=await j("/orders"), es=await j("/earnings?rider_id="+currentRider);
+ if(view==="jobs"){let jobs=os.filter(o=>o.status==="placed");return top("Jignesh Rathod · Online")+`<div class=wrap><h1>Available jobs</h1>${jobs.map(o=>`<div class=order><div class=row><b>${o.code}</b><span>${money(Math.round(o.fare*.78))} payout</span></div><p>${o.pickup} → ${o.dropoff}</p><button class="btn orange w" onclick="act(${o.id},'accept')">Accept job</button></div>`).join("")||"<div class=card>No open jobs right now.</div>"}</div>${rnav()}`}
+ if(view==="active"){let a=os.filter(o=>o.rider_id===currentRider&&!["delivered","cancelled"].includes(o.status));return top("Jignesh Rathod · Online")+`<div class=wrap><h1>Active deliveries</h1>${a.map(o=>`<div class=order><div class=row><b>${o.code}</b><span class=pill>${o.status}</span></div><p>${o.pickup} → ${o.dropoff}</p>${ract(o)}</div>`).join("")||"<div class=card>Nothing active.</div>"}</div>${rnav()}`}
+ if(view==="earnings"){let total=es.reduce((s,e)=>s+e.amount,0);return top("Jignesh Rathod")+`<div class=wrap><h1>Earnings</h1><div class=hero><div class=ey>TOTAL PAYOUT</div><div class=price>${money(total)}</div><div>${es.length} completed jobs</div></div>${es.map(e=>`<div class=order><div class=row><b>${e.code}</b><b>${money(e.amount)}</b></div><div class=sub>${e.pickup} → ${e.dropoff}</div></div>`).join("")}</div>${rnav()}`}
+ return top("Jignesh Rathod")+`<div class=wrap><div class=card><h2>Jignesh Rathod</h2><p>GJ-16 AB 4412 · Splendor</p><p>Ankleshwar · Online</p></div></div>${rnav()}`
+}
+function rnav(){return `<div class=nav><button class="${view==='jobs'?'on':''}" onclick="view='jobs';render()">Jobs</button><button class="${view==='active'?'on':''}" onclick="view='active';render()">Active</button><button class="${view==='earnings'?'on':''}" onclick="view='earnings';render()">Earnings</button><button class="${view==='profile'?'on':''}" onclick="view='profile';render()">Profile</button></div>`}
+function ract(o){if(o.status==="accepted")return `<button class="btn orange w" onclick="act(${o.id},'picked_up')">Mark picked up</button>`;if(o.status==="picked_up")return `<button class="btn orange w" onclick="act(${o.id},'in_transit')">Start delivery</button>`;if(o.status==="in_transit")return `<input id="otp${o.id}" placeholder="Enter delivery OTP"><button class="btn orange w" style="margin-top:10px" onclick="deliver(${o.id})">Verify & deliver</button>`;return ""}
+async function act(id,a){await j("/orders/"+id,{method:"PATCH",headers:{"content-type":"application/json","x-role":"rider","x-pin":riderPin},body:JSON.stringify({action:a,rider_id:currentRider})});view="active";render()}
+async function deliver(id){try{await j("/orders/"+id,{method:"PATCH",headers:{"content-type":"application/json","x-role":"rider","x-pin":riderPin},body:JSON.stringify({action:"deliver",otp:q("#otp"+id).value})});view="earnings";render()}catch(e){alert(e.message)}}
+async function admin(){
+ let os=await j("/orders"), rs=await j("/riders"), p=await pricing(); let active=os.filter(o=>["accepted","picked_up","in_transit"].includes(o.status)).length;let rev=os.filter(o=>o.status==="delivered").reduce((s,o)=>s+Number(o.fare||0),0);
+ return top("Admin")+`<div class=wrap><h1>Operations console</h1><div class=kpi><div class=k><div class=sub>Bookings</div><b>${os.length}</b></div><div class=k><div class=sub>Active</div><b>${active}</b></div><div class=k><div class=sub>Online riders</div><b>${rs.filter(r=>r.online).length}</b></div><div class=k><div class=sub>Revenue</div><b>${money(rev)}</b></div></div>
+ <div class=card><h2>Pricing</h2><label>Base fare</label><input id=bf type=number value="${p.base_fare}"><label>Per km</label><input id=pk type=number value="${p.per_km}"><label>Urgent surcharge</label><input id=us type=number value="${p.urgent_surcharge}"><label>Rider payout %</label><input id=pp type=number value="${p.rider_payout_pct}"><button class="btn orange w" style="margin-top:12px" onclick="saveP()">Save pricing</button></div>
+ <div class=card><h2>Bookings</h2>${os.map(ocard).join("")}</div></div>`}
+async function saveP(){await j("/pricing",{method:"PATCH",headers:{"content-type":"application/json","x-role":"admin","x-pin":adminPin},body:JSON.stringify({base_fare:+bf.value,base_km:2,per_km:+pk.value,urgent_surcharge:+us.value,rider_payout_pct:+pp.value,passenger_ride_enabled:false})});alert("Pricing saved");render()}
+async function render(){let r=q("#root");r.innerHTML="<div class=wrap>Loading…</div>";try{r.innerHTML= role==="customer"?await customer():role==="staff"?await staffScreen():role==="rider"?await rider():await admin()}catch(e){r.innerHTML=`<div class=wrap><div class=card><h2>Backend not connected yet</h2><p>${e.message}</p><p>Create and bind the Cloudflare D1 database using the included setup guide.</p></div></div>`}}
+render();
+</script></body></html>
